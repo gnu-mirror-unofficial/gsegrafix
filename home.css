@@ -1,0 +1,37 @@
+/* Body specifications */
+body { color: #000000;
+       background-color: #F0F0F0;
+       padding: 5%;
+       margin: 0%;
+       font-family: serif;
+       font-size: 100%; }
+
+/* Heading specifications */
+h1 { font-size: 200%; text-align: center; }
+h2 { font-size: 150%; }
+h3 { font-size: 125%; }
+h4 { font-size: 100%; }
+h5 { font-size: 100%; }
+h6 { font-size: 100%; }
+
+/* Copyright-line specifications */
+#copyright { text-align: center; font-size: 100%; }
+
+ul { list-style-type: none;
+     list-style-position: outside;
+     font-weight: bold;
+     font-size: 100%;
+     width: 500px;
+     padding-left: 0px; }
+
+/* Preformatted-text font specifications */
+pre { font-family: monospace; font-size: 100%; }
+
+/* Superscript and subscript specifications */
+span.sup { vertical-align: super; font-size: 90%; }
+span.sub { vertical-align: sub; font-size: 90%; }
+
+/* Image specifications */
+.image_introduction { text-align: center; }
+.image_small { border: 1px solid #000000; width: 200; height: 144; }
+
