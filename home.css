@@ -24,6 +24,21 @@ ul { list-style-type: none;
      width: 500px;
      padding-left: 0px; }
 
+/* Contents list specifications */
+ul { list-style-type: none;
+     list-style-position: outside;
+     font-weight: bold;
+     font-size: 100%;
+     width: 500px;
+     padding-left: 0px; }
+
+ul ul { list-style-type: none;
+        list-style-position: outside;
+        font-weight: normal;
+        font-size: 100%;
+        width: 500px;
+        padding-left: 20px; }
+
 /* Preformatted-text font specifications */
 pre { font-family: monospace; font-size: 100%; }
 

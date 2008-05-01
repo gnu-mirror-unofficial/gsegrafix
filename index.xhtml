@@ -29,6 +29,14 @@ Copyright &copy; 2008 Spencer A. Buckner
   <li>&nbsp;</li>
   <li><a href="#Introduction">Introduction</a></li>
   <li>&nbsp;</li>
+  <li><a href="#Operation">Operation</a>
+    <ul>
+      <li><a href="#Running_GSEGrafix_from_a_terminal_window">Running GSEGrafix from a terminal window</a></li>
+      <li><a href="#Running_GSEGrafix_from_an_Octave_program">Running GSEGrafix from an Octave program</a></li>
+      <li><a href="#Running_GSEGrafix_from_a_C_program">Running_GSEGrafix_from_a_C_program</a></li>
+    </ul>
+  </li>
+  <li>&nbsp;</li>
   <li><a href="#Examples">Examples</a></li>
 </ul>
 
@@ -36,6 +44,7 @@ Copyright &copy; 2008 Spencer A. Buckner
 <p>
 Use, copying, modification, and distribution of the GSEGrafix plotting program are subject to the terms of the <a href="./COPYING">GNU General Public License, Version 3</a>, or any later version published by the <a href="http://www.fsf.org/">Free Software Foundation</a>.
 </p>
+
 <p>
 <a href="#Contents">Contents</a>
 </p>
@@ -53,42 +62,83 @@ A menu bar at the top of the plot window allows users to save the plot to a file
 <p>
 All plots include options to add a grid, legend, text, and date-time string to the plot. Additional images can be added to a plot by specifying image file names and desired locations on the plot. Rectangular two-dimensional plots include a zoom capability using the mouse to specify a rectangle on the plot to expand. Hidden lines are removed from three-dimensional mesh and contour plots unless specified otherwise. The program calculates &quot;nice&quot; tick-mark labels for all plots.
 </p>
+
+<p>
+<a href="#Contents">Contents</a>
+</p>
+
+<h2 id="Operation">Operation</h2>
 <p>
 The program has two executables, gsegrafix and gsegraf. Running gsegrafix will display a window which can be used to choose a plot-parameter file. If the program's path is included in the PATH environment variable, type the name of the program, gsegrafix, and an ampersand (&amp;) at the $ prompt to run the program in the background:
 </p>
 <pre>     $ gsegrafix &amp;</pre>
 <p>
-The result is shown below:
+Click on the image below for the resulting full-size window:
 </p>
 
 <div class="image_introduction">
 <p>
-<img src="./figures/gsegrafix.png" alt="gsegrafix.png" width="406" height="348" />
+<a href="./figures/gsegrafix.png" ><img src="./figures/gsegrafix_small.png" width="203" height="174" /></a>
 </p>
 </div>
 
 <p>
-If the program's path is not included in the PATH environment variable, the program can be run if its path is included in the command. When the GSEGrafix window appears, press the File button to choose a plot-parameter file. When a plot-parameter file has been chosen and the OK button pressed, a window containing the plot will be drawn. An example plot window is shown below:
+If the program's path is not included in the PATH environment variable, the program can be run if its path is included in the command. When the GSEGrafix window appears, press the File button to choose a plot-parameter file. When a plot-parameter file has been chosen and the OK button pressed, a window containing the plot will be drawn. Click on the image below for a full-size example plot window:
 </p>
 
 <div class="image_introduction">
 <p>
-<img src="./figures/window.png" alt="gsegrafix.png" width="774" height="599" />
+<a href="./figures/window.png" ><img src="./figures/window_small.png" width="194" height="150" /></a>
 </p>
 </div>
 
+<h3 id="Running_GSEGrafix_from_a_terminal_window">Running GSEGrafix from a terminal window</h3>
 <p>
 The program can also be run by using either the gsegrafix or gsegraf command followed by the name of a plot-parameter file:
 </p>
-<pre>     $ gsegrafix /home/sab/gsegrafix/param_files/bessel_param.txt &amp;</pre>
+<pre>     $ gsegrafix /home/sab/gsegrafix/param_files/sinc_param.txt &amp;</pre>
 <p>or:</p>
-<pre>     $ gsegraf /home/sab/gsegrafix/param_files/bessel_param.txt &amp;</pre>
+<pre>     $ gsegraf /home/sab/gsegrafix/param_files/sinc_param.txt &amp;</pre>
 <p>
 A help file can be displayed by using either the gsegrafix or gsegraf command followed by <code>-h</code>:
 </p>
 <pre>     $ gsegrafix -h</pre>
 <p>or:</p>
 <pre>     $ gsegraf -h</pre>
+
+<h3 id="Running_GSEGrafix_from_an_Octave_program">Running GSEGrafix from an Octave program</h3>
+<p>
+GSEGrafix can be run from an <a href="http://www.octave.org/">Octave</a> program by calling an Octave function such as <a href="./gsegraf_plot.txt"> gsegraf_plot</a>. This function writes a plot-parameter file and then uses gsegraf to create the corresponding plot. The first input to the function is the name of the plot-parameter file to be created. The remaining inputs are keyword-argument pairs to be written to the plot-parameter file. All inputs must be strings (enclosed in double quotes) and separated by commas. If all or part of an argument needs to be quoted in the plot-parameter file, the double-quote escape sequence (<code>\&quot;</code>) must be used for these additional quotes. An example of how to call gsegraf_plot is:
+</p>
+<pre>     gsegraf_plot("./sinc_param.txt",
+                  "file_name     \"./sinc.txt\"",
+                  "file_format   \"%lf %lf\"",
+                  "plot_type     \"points\"",
+                  "plot_style    lk",
+                  "axis_type     \"linear\"",
+                  "grid          ls",
+                  "xlabel        \"x axis\"",
+                  "ylabel        \"y axis\"",
+                  "title         \"sin(x)/x\"");
+</pre>
+
+<h3 id="Running_GSEGrafix_from_a_C_program">Running GSEGrafix from a C program</h3>
+<p>
+GSEGrafix can be run from a C program by calling a C function such as <a href="./gsegraf_C_plot.txt"> gsegraf_C_plot</a>. As described above for an Octave function, the C function writes a plot-parameter file and then uses gsegraf to create the corresponding plot. The only difference for calling the C function is that the list of keyword-argument pairs must be terminated with a <code>NULL</code> pointer:
+</p>
+<pre>     gsegraf_C_plot("./sinc_param.txt",
+                    "file_name     \"./sinc.txt\"",
+                    "file_format   \"%lf %lf\"",
+                    "plot_type     \"points\"",
+                    "plot_style    lk",
+                    "axis_type     \"linear\"",
+                    "grid          ls",
+                    "xlabel        \"x axis\"",
+                    "ylabel        \"y axis\"",
+                    "title         \"sin(x)/x\"",
+                    NULL);
+</pre>
+
 <p>
 <a href="#Contents">Contents</a>
 </p>
@@ -123,10 +173,4 @@ Click on images for full-size example plots.
 
 </body>
 </html>
-
-<!--
-<p>
-<a href="javascript:location='./home.xhtml'; window.open('./figures/sinc.png','width=768','height=576')"><img src="./figures/sinc_small.png" class="image_small" /></a>
-</p>
--->
 
