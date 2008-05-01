@@ -1,0 +1,41 @@
+function gsegraf_plot(varargin)
+
+   % Function writes a plot-parameter file and then uses gsegraf to create the
+   % corresponding plot.
+   %
+   % Input
+   %    fname:           plot-parameter file-name (including path)
+   %    keyword1   arg1: first keyword-argument pair
+   %    keyword2   arg2: second keyword-argument pair
+   %                               etc
+   %
+   % All inputs must be strings (enclosed in double quotes) and separated by commas.
+   % If all or part of an argument needs to be quoted in the plot-parameter file,
+   % the double-quote escape sequence (\") must be used for these additional quotes.
+   % An example of how to call gsegraf_plot is:
+   %
+   %    gsegraf_plot("./sinc_param.txt",
+   %                 "file_name     \"./sinc.txt\"",
+   %                 "file_format   \"%lf %lf\"",
+   %                 "plot_type     \"points\"",
+   %                 "plot_style    lk",
+   %                 "axis_type     \"linear\"",
+   %                 "grid          ls",
+   %                 "xlabel        \"x axis\"",
+   %                 "ylabel        \"y axis\"",
+   %                 "title         \"sin(x)/x\"");
+
+   % Write plot-parameter file
+   narg = length(varargin);
+   fname = varargin{1};
+   fid = fopen(fname, "w");
+   for ( i = 2:narg )
+      fprintf(fid, "%s\n", varargin{i});
+   end
+   fclose(fid);
+
+   % Plot data
+   system(["gsegraf " fname " &"]);
+   pause(1);
+end
+
