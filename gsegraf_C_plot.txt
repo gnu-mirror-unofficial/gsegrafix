@@ -5,7 +5,7 @@
 
 void gsegraf_C_plot ( char *fname, ... )
    {
-   /********************************************************************************
+   /****************************************************************************
    *
    * Function writes a plot-parameter file and then uses gsegraf to create the
    * corresponding plot.
@@ -16,11 +16,11 @@ void gsegraf_C_plot ( char *fname, ... )
    *    keyword2   arg2: second keyword-argument pair
    *                               etc
    *
-   * All inputs must be strings (enclosed in double quotes) and separated by commas.
-   * If all or part of an argument needs to be quoted in the plot-parameter file,
-   * the double-quote escape sequence (\") must be used for these additional quotes.
-   * The list of keyword-argument pairs must be terminated by a NULL pointer. An
-   * example of how to call gsegraf_C_plot is:
+   * All inputs must be strings (enclosed in double quotes) and separated by
+   * commas. If all or part of an argument needs to be quoted in the plot-
+   * parameter file, the double-quote escape sequence (\") must be used for
+   * these additional quotes. The list of keyword-argument pairs must be
+   * terminated by a NULL pointer. An example of how to call gsegraf_C_plot is:
    *
    *    gsegraf_C_plot("./sinc_param.txt",
    *                   "file_name     \"./sinc.txt\"",
@@ -34,30 +34,43 @@ void gsegraf_C_plot ( char *fname, ... )
    *                   "title         \"sin(x)/x\"",
    *                   NULL);
    *
-   ********************************************************************************/
+   ****************************************************************************/
 
+void gsegraf_plot ( char *fname, ... )
+   {
    /* Declare variables */
    unsigned int size;
-   char *str, *command;
+   char *str, *command, tempfile[] = "gsegraf_XXXXXX", character;
    va_list argp;
-   FILE *fid;
+   FILE *fptr;
 
    /* Write plot-parameter file */
-   fid = fopen(fname, "w");
+   fptr = fopen(fname, "w");
    va_start(argp, fname);
    while ( (str = va_arg(argp, char *)) != NULL )
-      fprintf(fid, "%s\n", str);
-   fclose(fid);
+      fprintf(fptr, "%s\n", str);
+   fclose(fptr);
    va_end(argp);
 
    /* Plot data */
-   size = strlen(fname) + 11;
+   fptr = (FILE *) mkstemp(tempfile);
+   size = strlen(fname) + strlen(tempfile) + 12;
    command = malloc(size*sizeof(char));
    memset(command, 0, size*sizeof(char));
-   sprintf(command, "%s %s %c", "gsegraf", fname, '&');
+   sprintf(command, "%s %s %s %c", "gsegraf", fname, tempfile, '&');
    system(command);
    free(command);
-   system("sleep 1");
+
+   % Wait for data to be plotted
+   fptr = fopen(tempfile, "r");
+   while ( (character = fgetc(fptr)) != 'c' )
+      {
+      system("sleep 0.1");
+      rewind(fptr);
+      }
+   system("sleep 0.1");
+   fclose(fptr);
+   remove(tempfile);
 
    return;
    }

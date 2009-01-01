@@ -1,5 +1,7 @@
 function gsegraf_plot(varargin)
 
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   %
    % Function writes a plot-parameter file and then uses gsegraf to create the
    % corresponding plot.
    %
@@ -9,10 +11,10 @@ function gsegraf_plot(varargin)
    %    keyword2   arg2: second keyword-argument pair
    %                               etc
    %
-   % All inputs must be strings (enclosed in double quotes) and separated by commas.
-   % If all or part of an argument needs to be quoted in the plot-parameter file,
-   % the double-quote escape sequence (\") must be used for these additional quotes.
-   % An example of how to call gsegraf_plot is:
+   % All inputs must be strings (enclosed in double quotes) and separated by
+   % commas. If all or part of an argument needs to be quoted in the plot-
+   % parameter file, the double-quote escape sequence (\") must be used for
+   % these additional quotes. An example of how to call gsegraf_plot is:
    %
    %    gsegraf_plot("./sinc_param.txt",
    %                 "file_name     \"./sinc.txt\"",
@@ -24,6 +26,8 @@ function gsegraf_plot(varargin)
    %                 "xlabel        \"x axis\"",
    %                 "ylabel        \"y axis\"",
    %                 "title         \"sin(x)/x\"");
+   %
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
    % Write plot-parameter file
    narg = length(varargin);
@@ -35,7 +39,16 @@ function gsegraf_plot(varargin)
    fclose(fid);
 
    % Plot data
-   system(["gsegraf " fname " &"]);
-   pause(1);
+   [fid, tempfile, msg] = mkstemp("gsegraf_XXXXXX", 1);
+   system(["gsegraf " fname " " tempfile " &"]);
+
+   % Wait for data to be plotted
+   while ( (character = fgets(fid, 1)) != 'c' )
+      pause(0.1);
+      frewind(fid);
+   end
+   pause(0.1);
+   fclose(fid);
+   delete(tempfile);
 end
 
