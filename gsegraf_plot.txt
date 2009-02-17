@@ -2,8 +2,11 @@ function gsegraf_plot(varargin)
 
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    %
-   % Function writes a plot-parameter file and then uses gsegraf to create the
-   % corresponding plot.
+   % Function writes a plot-parameter file, opens a temporary file for
+   % communication with the plotting program, and then uses gsegraf to create
+   % the plot. When the plot is completed, gsegraf writes the string "complete"
+   % to the temporary file. The function then deletes the temporary file and
+   % plot-parameter file.
    %
    % Input
    %    fname:           plot-parameter file-name (including path)
@@ -42,13 +45,15 @@ function gsegraf_plot(varargin)
    [fid, tempfile, msg] = mkstemp("gsegraf_XXXXXX", 1);
    system(["gsegraf " fname " " tempfile " &"]);
 
-   % Wait for data to be plotted
-   while ( (character = fgets(fid, 1)) != 'c' )
+   % Wait for plot to be completed
+   while ( fgets(fid, 1) == -1 )
       pause(0.1);
       frewind(fid);
    end
-   pause(0.1);
    fclose(fid);
    delete(tempfile);
+
+   % Delete plot-parameter file
+   delete(fname);
 end
 

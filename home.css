@@ -10,7 +10,7 @@ body { color: #000000;
 h1 { font-size: 200%; text-align: center; }
 h2 { font-size: 150%; }
 h3 { font-size: 125%; }
-h4 { font-size: 100%; }
+h4 { font-size: 112%; }
 h5 { font-size: 100%; }
 h6 { font-size: 100%; }
 
@@ -47,6 +47,6 @@ span.sup { vertical-align: super; font-size: 90%; }
 span.sub { vertical-align: sub; font-size: 90%; }
 
 /* Image specifications */
-.image_introduction { text-align: center; }
+.image_introduction { padding-top: 5px; padding-bottom: 5px; border: none; text-align: center; }
 .image_small { border: 1px solid #000000; width: 192; height: 138; }
 

@@ -2,13 +2,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 void gsegraf_C_plot ( char *fname, ... )
    {
    /****************************************************************************
    *
-   * Function writes a plot-parameter file and then uses gsegraf to create the
-   * corresponding plot.
+   * Function writes a plot-parameter file, opens a temporary file for
+   * communication with the plotting program, and then uses gsegraf to create
+   * the plot. When the plot is completed, gsegraf writes the string "complete"
+   * to the temporary file. The function then deletes the temporary file and
+   * plot-parameter file.
    *
    * Input
    *    fname:           plot-parameter file-name (including path)
@@ -36,11 +40,10 @@ void gsegraf_C_plot ( char *fname, ... )
    *
    ****************************************************************************/
 
-void gsegraf_plot ( char *fname, ... )
-   {
    /* Declare variables */
+   int fd;
    unsigned int size;
-   char *str, *command, tempfile[] = "gsegraf_XXXXXX", character;
+   char *str, *command, tempfile[] = "gsegraf_XXXXXX";
    va_list argp;
    FILE *fptr;
 
@@ -53,7 +56,9 @@ void gsegraf_plot ( char *fname, ... )
    va_end(argp);
 
    /* Plot data */
-   fptr = (FILE *) mkstemp(tempfile);
+   fd = mkstemp(tempfile);
+   close(fd);
+   fptr = fopen(tempfile, "r");
    size = strlen(fname) + strlen(tempfile) + 12;
    command = malloc(size*sizeof(char));
    memset(command, 0, size*sizeof(char));
@@ -61,16 +66,17 @@ void gsegraf_plot ( char *fname, ... )
    system(command);
    free(command);
 
-   % Wait for data to be plotted
-   fptr = fopen(tempfile, "r");
-   while ( (character = fgetc(fptr)) != 'c' )
+   /* Wait for plot to be completed */
+   while ( fgetc(fptr) == EOF )
       {
       system("sleep 0.1");
       rewind(fptr);
       }
-   system("sleep 0.1");
    fclose(fptr);
    remove(tempfile);
+
+   /* Delete plot-parameter file */
+   remove(fname);
 
    return;
    }
